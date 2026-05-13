@@ -766,7 +766,7 @@ export default function GamePage() {
     setBonusMultiplier(1);
     setStreak(newStreak);
 
-    supabase.rpc('update_player_stats', {
+    await supabase.rpc('update_player_stats', {
       p_player_id: playerId,
       p_coins_delta: 1,
       p_correct_delta: 1,
@@ -828,8 +828,8 @@ export default function GamePage() {
 
         setBonusMultiplier(1);
 
-        // Sync stats to DB (fire-and-forget)
-        supabase.rpc('update_player_stats', {
+        // Sync stats to DB
+        await supabase.rpc('update_player_stats', {
           p_player_id: playerId,
           p_coins_delta: 1,
           p_correct_delta: 1,
@@ -850,7 +850,7 @@ export default function GamePage() {
         setBonusMultiplier(1);
 
         // Reset streak in DB
-        supabase.rpc('update_player_stats', {
+        await supabase.rpc('update_player_stats', {
           p_player_id: playerId,
           p_coins_delta: 0,
           p_correct_delta: 0,
@@ -1126,12 +1126,11 @@ export default function GamePage() {
         </div>
       )}
 
-      {/* Tab bar */}
+      {/* Tab bar — only Juego and Tienda */}
       <div className="flex gap-1 px-4 mb-3">
         {[
           { id: 'game', label: '⚔️ Juego' },
           { id: 'shop', label: '🏪 Tienda' },
-          { id: 'leaderboard', label: '🏆 Tabla' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -1150,7 +1149,7 @@ export default function GamePage() {
       </div>
 
       {/* Tab content */}
-      <main className="flex-1 px-4 pb-4 flex flex-col gap-3">
+      <main className="px-4 flex flex-col gap-3">
         {/* ── GAME TAB ── */}
         {activeTab === 'game' && (
           <>
@@ -1215,12 +1214,15 @@ export default function GamePage() {
             onBuySabotaje={handleBuySabotaje}
           />
         )}
-
-        {/* ── LEADERBOARD TAB ── */}
-        {activeTab === 'leaderboard' && (
-          <LeaderboardPanel players={allPlayers} myId={playerId} />
-        )}
       </main>
+
+      {/* ── LEADERBOARD — always visible ── */}
+      <div className="px-4 pb-4 mt-4">
+        <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2 px-1">
+          🏆 Tabla de Líderes
+        </p>
+        <LeaderboardPanel players={allPlayers} myId={playerId} />
+      </div>
 
       <footer className="text-center py-3 text-[10px] text-gray-600">
         La Casa Dividida · {isRev ? '⭐ Revolucionarios' : '🗽 Exiliados'}

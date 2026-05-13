@@ -89,7 +89,13 @@ export default function GMPage() {
   const resetGame = async () => {
     setBusy(true);
     setConfirmReset(false);
-    await supabase.rpc('reset_game');
+    const { error } = await supabase.rpc('reset_game');
+    if (!error) {
+      // Update UI immediately — don't wait for realtime
+      setRopePosition(50);
+      setGameStatus('waiting');
+      setPlayers([]);
+    }
     setBusy(false);
   };
 

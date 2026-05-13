@@ -119,7 +119,11 @@ BEGIN
 END;
 $$;
 
--- 7. Redefine reset_game to also clear boosts (players are deleted already)
+-- 7. REPLICA IDENTITY FULL on players so UPDATE events fire through realtime
+--    (without this, only INSERT/DELETE fire; UPDATE events are silent)
+ALTER TABLE players REPLICA IDENTITY FULL;
+
+-- 8. Redefine reset_game to also clear boosts (players are deleted already)
 CREATE OR REPLACE FUNCTION reset_game()
 RETURNS void
 LANGUAGE plpgsql
