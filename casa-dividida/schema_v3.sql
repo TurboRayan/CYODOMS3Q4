@@ -123,20 +123,29 @@ $$;
 --    (without this, only INSERT/DELETE fire; UPDATE events are silent)
 ALTER TABLE players REPLICA IDENTITY FULL;
 
--- 8. Redefine reset_game to also clear boosts (players are deleted already)
+-- 8. Redefine reset_game — works even if boost columns don't exist yet
 CREATE OR REPLACE FUNCTION reset_game()
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 BEGIN
+  -- Always safe: reset the core columns
   UPDATE game_state
-    SET rope_position    = 50.0,
-        status           = 'waiting',
-        rev_boost_until  = NULL,
-        exil_boost_until = NULL,
-        updated_at       = NOW()
+    SET rope_position = 50.0,
+        status        = 'waiting',
+        updated_at    = NOW()
   WHERE id = 1;
+
+  -- Clear boost columns only if they exist (schema_v3 may not have run yet)
+  BEGIN
+    UPDATE game_state
+      SET rev_boost_until  = NULL,
+          exil_boost_until = NULL
+    WHERE id = 1;
+  EXCEPTION WHEN undefined_column THEN NULL;
+  END;
+
   DELETE FROM players;
 END;
 $$;

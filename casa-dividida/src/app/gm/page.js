@@ -89,13 +89,23 @@ export default function GMPage() {
   const resetGame = async () => {
     setBusy(true);
     setConfirmReset(false);
+
     const { error } = await supabase.rpc('reset_game');
-    if (!error) {
-      // Update UI immediately — don't wait for realtime
-      setRopePosition(50);
-      setGameStatus('waiting');
-      setPlayers([]);
+
+    if (error) {
+      // RPC failed (e.g. schema not updated yet) — fall back to direct writes
+      await supabase
+        .from('game_state')
+        .update({ rope_position: 50, status: 'waiting' })
+        .eq('id', 1);
+      // Delete all players (RLS policy allows this)
+      await supabase.from('players').delete().gt('joined_at', '1970-01-01');
     }
+
+    // Always update the GM UI immediately regardless of which path ran
+    setRopePosition(50);
+    setGameStatus('waiting');
+    setPlayers([]);
     setBusy(false);
   };
 
