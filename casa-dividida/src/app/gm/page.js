@@ -17,11 +17,13 @@ export default function GMPage() {
   const [busy, setBusy] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
+  // GM view tab: 'roster' | 'leaderboard'
+  const [gmTab, setGmTab] = useState('roster');
+
   // ── Load data once authenticated ──────────────────────────────────────────
   useEffect(() => {
     if (!authenticated) return;
 
-    // Initial fetches
     supabase
       .from('game_state')
       .select('rope_position, status')
@@ -40,7 +42,6 @@ export default function GMPage() {
       .order('joined_at')
       .then(({ data }) => { if (data) setPlayers(data); });
 
-    // Realtime: game_state
     const gsChannel = supabase
       .channel('gm_game_state')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'game_state' }, (payload) => {
@@ -49,7 +50,6 @@ export default function GMPage() {
       })
       .subscribe();
 
-    // Realtime: players
     const playersChannel = supabase
       .channel('gm_players')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, () => {
@@ -97,6 +97,10 @@ export default function GMPage() {
   const revPlayers = players.filter((p) => p.faction === 'revolucionarios');
   const exilPlayers = players.filter((p) => p.faction === 'exiliados');
   const isPlaying = gameStatus === 'playing';
+
+  // Leaderboard sorted lists
+  const revLeader = [...revPlayers].sort((a, b) => (b.correct_count || 0) - (a.correct_count || 0));
+  const exilLeader = [...exilPlayers].sort((a, b) => (b.correct_count || 0) - (a.correct_count || 0));
 
   // ── Login screen ──────────────────────────────────────────────────────────
   if (!authenticated) {
@@ -151,7 +155,9 @@ export default function GMPage() {
           <div className="flex items-center justify-between mb-3">
             <span className="text-gray-400 text-xs uppercase tracking-widest">Estado del juego</span>
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-              isPlaying ? 'bg-green-900 text-green-400 border border-green-700' : 'bg-orange-900 text-orange-400 border border-orange-700'
+              isPlaying
+                ? 'bg-green-900 text-green-400 border border-green-700'
+                : 'bg-orange-900 text-orange-400 border border-orange-700'
             }`}>
               {isPlaying ? '● EN JUEGO' : '● ESPERANDO'}
             </span>
@@ -218,38 +224,142 @@ export default function GMPage() {
           </div>
         )}
 
-        {/* Player lists */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-red-950/30 border border-red-900/70 rounded-2xl p-3">
-            <h2 className="text-red-400 font-bold text-xs uppercase tracking-wider mb-2">
-              ⭐ Revolucionarios ({revPlayers.length})
-            </h2>
-            {revPlayers.length === 0 ? (
-              <p className="text-gray-600 text-xs">Sin jugadores</p>
-            ) : (
-              revPlayers.map((p) => (
-                <div key={p.id} className="text-red-200 text-sm py-0.5 border-b border-red-900/40 last:border-0 truncate">
-                  {p.name}
-                </div>
-              ))
-            )}
+        {/* Summary stats */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-3 text-center">
+            <div className="text-xl font-extrabold text-white">{players.length}</div>
+            <div className="text-[10px] text-gray-500 uppercase">Jugadores</div>
           </div>
-
-          <div className="bg-blue-950/30 border border-blue-900/70 rounded-2xl p-3">
-            <h2 className="text-blue-400 font-bold text-xs uppercase tracking-wider mb-2">
-              🗽 Exiliados ({exilPlayers.length})
-            </h2>
-            {exilPlayers.length === 0 ? (
-              <p className="text-gray-600 text-xs">Sin jugadores</p>
-            ) : (
-              exilPlayers.map((p) => (
-                <div key={p.id} className="text-blue-200 text-sm py-0.5 border-b border-blue-900/40 last:border-0 truncate">
-                  {p.name}
-                </div>
-              ))
-            )}
+          <div className="bg-red-950/30 border border-red-900/60 rounded-xl p-3 text-center">
+            <div className="text-xl font-extrabold text-red-300">{revPlayers.length}</div>
+            <div className="text-[10px] text-gray-500 uppercase">⭐ Rev.</div>
+          </div>
+          <div className="bg-blue-950/30 border border-blue-900/60 rounded-xl p-3 text-center">
+            <div className="text-xl font-extrabold text-blue-300">{exilPlayers.length}</div>
+            <div className="text-[10px] text-gray-500 uppercase">🗽 Exil.</div>
           </div>
         </div>
+
+        {/* Tab bar */}
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => setGmTab('roster')}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+              gmTab === 'roster' ? 'bg-yellow-700 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
+          >
+            👥 Jugadores
+          </button>
+          <button
+            onClick={() => setGmTab('leaderboard')}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+              gmTab === 'leaderboard' ? 'bg-yellow-700 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
+          >
+            🏆 Tabla
+          </button>
+        </div>
+
+        {/* Roster tab */}
+        {gmTab === 'roster' && (
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-red-950/30 border border-red-900/70 rounded-2xl p-3">
+              <h2 className="text-red-400 font-bold text-xs uppercase tracking-wider mb-2">
+                ⭐ Revolucionarios ({revPlayers.length})
+              </h2>
+              {revPlayers.length === 0 ? (
+                <p className="text-gray-600 text-xs">Sin jugadores</p>
+              ) : (
+                revPlayers.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between text-red-200 text-sm py-0.5 border-b border-red-900/40 last:border-0">
+                    <span className="truncate">{p.name}</span>
+                    {(p.current_streak || 0) > 0 && (
+                      <span className="ml-1 text-orange-400 text-xs shrink-0">
+                        🔥{p.current_streak > 1 ? p.current_streak : ''}
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="bg-blue-950/30 border border-blue-900/70 rounded-2xl p-3">
+              <h2 className="text-blue-400 font-bold text-xs uppercase tracking-wider mb-2">
+                🗽 Exiliados ({exilPlayers.length})
+              </h2>
+              {exilPlayers.length === 0 ? (
+                <p className="text-gray-600 text-xs">Sin jugadores</p>
+              ) : (
+                exilPlayers.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between text-blue-200 text-sm py-0.5 border-b border-blue-900/40 last:border-0">
+                    <span className="truncate">{p.name}</span>
+                    {(p.current_streak || 0) > 0 && (
+                      <span className="ml-1 text-orange-400 text-xs shrink-0">
+                        🔥{p.current_streak > 1 ? p.current_streak : ''}
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Leaderboard tab */}
+        {gmTab === 'leaderboard' && (
+          <div className="flex flex-col gap-3">
+            {/* Column headers */}
+            <div className="flex justify-end gap-2 text-[10px] text-gray-500 px-1 pr-2">
+              <span className="text-green-500 w-10 text-right">✓ Aciertos</span>
+              <span className="w-12 text-right">Puntos</span>
+              <span className="w-8 text-right">🪙</span>
+            </div>
+
+            {/* Revolucionarios */}
+            <div className="bg-red-950/20 border border-red-900/50 rounded-2xl p-3">
+              <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2">
+                ⭐ Revolucionarios
+              </p>
+              {revLeader.length === 0 ? (
+                <p className="text-gray-600 text-xs">Sin jugadores</p>
+              ) : (
+                revLeader.map((p, i) => (
+                  <div key={p.id} className="flex items-center gap-1 text-xs py-1 border-b border-red-900/30 last:border-0">
+                    <span className="w-5 text-gray-500 text-center shrink-0">
+                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
+                    </span>
+                    <span className="flex-1 truncate text-red-200">{p.name}</span>
+                    <span className="text-green-400 font-bold w-10 text-right shrink-0">{p.correct_count || 0}</span>
+                    <span className="text-gray-400 w-12 text-right shrink-0">{(p.points_contributed || 0).toFixed(1)}</span>
+                    <span className="text-yellow-400 w-8 text-right shrink-0">{p.coins || 0}</span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Exiliados */}
+            <div className="bg-blue-950/20 border border-blue-900/50 rounded-2xl p-3">
+              <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-2">
+                🗽 Exiliados
+              </p>
+              {exilLeader.length === 0 ? (
+                <p className="text-gray-600 text-xs">Sin jugadores</p>
+              ) : (
+                exilLeader.map((p, i) => (
+                  <div key={p.id} className="flex items-center gap-1 text-xs py-1 border-b border-blue-900/30 last:border-0">
+                    <span className="w-5 text-gray-500 text-center shrink-0">
+                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
+                    </span>
+                    <span className="flex-1 truncate text-blue-200">{p.name}</span>
+                    <span className="text-green-400 font-bold w-10 text-right shrink-0">{p.correct_count || 0}</span>
+                    <span className="text-gray-400 w-12 text-right shrink-0">{(p.points_contributed || 0).toFixed(1)}</span>
+                    <span className="text-yellow-400 w-8 text-right shrink-0">{p.coins || 0}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
 
         <p className="text-center text-gray-600 text-xs mt-4">
           {players.length} jugador{players.length !== 1 ? 'es' : ''} en el campo
