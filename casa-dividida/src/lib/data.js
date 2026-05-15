@@ -30,7 +30,6 @@ export const REVOLUCIONARIOS = {
     },
   ],
   questions: [
-    // ── Original 10 questions ──
     {
       question: '¿En qué trabajaban los campesinos antes de la revolución?',
       correct: 'Cortando caña de azúcar',
@@ -81,7 +80,6 @@ export const REVOLUCIONARIOS = {
       correct: 'Porque las consideraban contrarrevolucionarias',
       incorrect: 'Porque cantaba muy mal en inglés',
     },
-    // ── New questions — Cuban Revolution (pro-revolutionary perspective) ──
     {
       question: '¿Por qué Carlos tuvo que trabajar el triple (tres veces más) para su jefe?',
       correct: 'Porque su hermanita murió y su familia no fue a trabajar, así que el jefe lo castigó',
@@ -157,132 +155,6 @@ export const REVOLUCIONARIOS = {
       correct: 'Una violencia horrible que un buen revolucionario debe solucionar con amor',
       incorrect: 'Un simple problema de dinero',
     },
-    // ── New questions — Chinese restaurant family (shared with both factions) ──
-    {
-      question: 'En el cómic, ¿cómo murió realmente el hámster?',
-      correct: 'La hermana pequeña se quedó dormida encima de él sin querer y lo aplastó',
-      incorrect: 'Un gato se lo comió',
-    },
-    {
-      question: '¿Qué mentira tonta dijo la niña al principio sobre el hámster muerto?',
-      correct: 'Dijo que el hámster se portó mal y ella lo castigó "pisándolo un poco"',
-      incorrect: 'Dijo que estaba viejo',
-    },
-    {
-      question: '¿Qué hacían las chicas para que los chicos chinos no entendieran lo que decían?',
-      correct: 'Hablaban en español a propósito para que no las entendieran',
-      incorrect: 'Usaban lenguaje de manos',
-    },
-    {
-      question: '¿Por qué la hermana mayor quería estar con su novio "Mc Alberto"?',
-      correct: 'Porque aunque parecía un "chico malo", era muy bueno y dulce con ella',
-      incorrect: 'Porque sacaba las mejores notas en la escuela',
-    },
-    {
-      question: '¿Qué decía la mamá siempre que las chicas se quejaban de trabajar en el restaurante?',
-      correct: 'Que las iba a sacar de la escuela porque su único deber era trabajar para la familia',
-      incorrect: 'Que las iba a mandar a vivir a China',
-    },
-    {
-      question: '¿Qué le dijo la amiga a Marga para que no se preocupara por su mamá?',
-      correct: 'Que no se preocupara, porque si era necesario, su propia madre la podía adoptar',
-      incorrect: 'Que se fuera a vivir sola',
-    },
-    {
-      question: '¿Qué le hizo la chica mala de la escuela (Cynthia) a una de las hermanas?',
-      correct: 'Le pegó muy fuerte en la cara',
-      incorrect: 'Le robó un libro',
-    },
-    {
-      question: 'Cuando la niña pequeña pregunta sobre la menstruación (la regla), ¿qué hace el papá?',
-      correct: 'Se hace el dormido en el sofá porque en esa casa nunca se hablan de esos temas',
-      incorrect: 'Le explica todo muy bien',
-    },
-    {
-      question: '¿Qué quería el hombre borracho que entró al restaurante?',
-      correct: 'Quería obligar a la niña a que le vendiera una pulsera que ella estaba haciendo para jugar',
-      incorrect: 'Quería beber más cerveza gratis',
-    },
-    {
-      question: '¿Qué le dijo la mamá a la niña sobre el hombre borracho?',
-      correct: 'Dásela (la pulsera) rápido para que se vaya de una vez',
-      incorrect: 'Ve a la cocina y escóndete, voy a llamar a la policía',
-    },
-    {
-      question: '¿Qué pasa de forma muy graciosa después de hablar en la habitación sobre gatos muertos?',
-      correct: 'Llaman por teléfono para decir que la niña pequeña ganó un premio de dibujo',
-      incorrect: 'El novio trae un perro',
-    },
-    {
-      question: '¿Cuál es un ejemplo de las cosas feas (racismo) que sufren las hermanas?',
-      correct: 'Las personas en la calle les gritan insultos y cosas feas por ser chinas',
-      incorrect: 'Las hacen limpiar la escuela',
-    },
-    {
-      question: '¿Qué hace la hermana pequeña para ayudar a Marga con su novio secreto?',
-      correct: 'Le guarda el secreto y vigila la puerta cuando Marga sale de la casa',
-      incorrect: 'Le dice a la mamá que Marga está estudiando',
-    },
-    {
-      question: 'Cuando la mamá se enoja y dice que sus hijas son "yua fa ba", ¿qué quiere decir?',
-      correct: 'Que son muy españolas ya y han perdido sus costumbres chinas',
-      incorrect: 'Que cocinan muy mal',
-    },
-    {
-      question: '¿Qué amenaza les hizo la mamá si decidían casarse con un chico español?',
-      correct: 'Que no les dejaría el restaurante ni un solo dinero de la familia en el futuro',
-      incorrect: 'Que no iría a la fiesta de la boda',
-    },
-    {
-      question: '¿Qué hizo el hermano pequeño apenas vio al hámster muerto?',
-      correct: 'Dijo súper rápido: "¡Es culpa tuya, tú lo soltaste!" echándole la culpa a su hermana',
-      incorrect: 'Lloró mucho pidiendo perdón',
-    },
-    {
-      question: '¿Por qué es muy graciosa y extraña la llamada de la abuela desde China?',
-      correct: 'Porque llama de madrugada para preguntar si son niñas buenas justo cuando están todos viendo al animal muerto aplastado',
-      incorrect: 'Porque llama para cantar cumpleaños un día cualquiera',
-    },
-    {
-      question: 'Según Marga, ¿qué cosa buena está intentando hacer Mc Alberto por ella?',
-      correct: 'Intentar dejar de fumar marihuana (porros) aunque le cuesta mucho',
-      incorrect: 'Borrarse sus tatuajes con láser',
-    },
-    {
-      question: '¿Qué es lo que la madre casi siempre les grita a las hijas que hagan?',
-      correct: 'Que ayuden en el restaurante: limpiando, sirviendo y trabajando sin parar',
-      incorrect: 'Que lean muchos libros en chino',
-    },
-    {
-      question: 'Cuando ven a otras chicas chinas en el campamento de verano, ¿qué les parece muy divertido?',
-      correct: 'Que las otras chicas tenían caras chinas pero hablaban como españolas de Madrid',
-      incorrect: 'Que tenían el pelo de muchos colores',
-    },
-    {
-      question: '¿Qué confusión graciosa tienen las chicas con el nombre del chico llamado "31"?',
-      correct: 'Ellas creían que "31" era un número, pero en realidad su nombre chino significa "agua" (manantial)',
-      incorrect: 'Pensaban que quería cobrarles 31 euros',
-    },
-    {
-      question: '¿Qué piensa la chica que es súper injusto cuando la mamá les grita que son perezosas?',
-      correct: 'Que ella saca notas excelentes (muy buenas) en la escuela y cualquier padre en España estaría súper feliz por eso',
-      incorrect: 'Que ella limpia toda la casa todos los días',
-    },
-    {
-      question: '¿Cómo sabemos que la mamá pide demasiado trabajo en el restaurante?',
-      correct: 'Porque les grita que son perezosas y las pone a limpiar las mesas aunque no haya ni un solo cliente en el restaurante',
-      incorrect: 'Porque ella misma cocina todo',
-    },
-    {
-      question: '¿Qué problema de la escuela nos muestra la historia con la chica mala, Cynthia?',
-      correct: 'El acoso escolar (bullying), donde los chicos son malos y se pelean en los pasillos de la escuela',
-      incorrect: 'El problema de sacar malas notas',
-    },
-    {
-      question: 'En toda la historia, ¿qué hace casi siempre el papá de las niñas cuando hay gritos o problemas?',
-      correct: 'Está durmiendo en el sofá, leyendo, o haciendo como que no escucha nada de los problemas de sus hijas',
-      incorrect: 'Se va a trabajar afuera',
-    },
   ],
 };
 
@@ -318,7 +190,6 @@ export const EXILIADOS = {
     },
   ],
   questions: [
-    // ── Original 10 questions ──
     {
       question: '¿Qué tipo de negocio tenía la familia de José en La Habana?',
       correct: 'Una exitosa compañía de tabaco',
@@ -369,7 +240,6 @@ export const EXILIADOS = {
       correct: 'Perdieron sus negocios y fueron forzados al exilio',
       incorrect: 'Ganaron más dinero trabajando para el gobierno',
     },
-    // ── New questions — Cuban Revolution (pro-exile perspective) ──
     {
       question: '¿Qué hizo Martín cuando su hermano Antony dijo que iba a pelear a las montañas?',
       correct: 'Le dio su apoyo total porque eran familia',
@@ -404,132 +274,6 @@ export const EXILIADOS = {
       question: '¿Por qué el gobierno de Cuba dejó que el padre de José siguiera trabajando en su empresa?',
       correct: 'Porque necesitaban que él siguiera vendiendo tabaco a otros países para ganar dinero',
       incorrect: 'Porque les dio mucho dinero en secreto',
-    },
-    // ── New questions — Chinese restaurant family (shared with both factions) ──
-    {
-      question: 'En el cómic, ¿cómo murió realmente el hámster?',
-      correct: 'La hermana pequeña se quedó dormida encima de él sin querer y lo aplastó',
-      incorrect: 'Un gato se lo comió',
-    },
-    {
-      question: '¿Qué mentira tonta dijo la niña al principio sobre el hámster muerto?',
-      correct: 'Dijo que el hámster se portó mal y ella lo castigó "pisándolo un poco"',
-      incorrect: 'Dijo que estaba viejo',
-    },
-    {
-      question: '¿Qué hacían las chicas para que los chicos chinos no entendieran lo que decían?',
-      correct: 'Hablaban en español a propósito para que no las entendieran',
-      incorrect: 'Usaban lenguaje de manos',
-    },
-    {
-      question: '¿Por qué la hermana mayor quería estar con su novio "Mc Alberto"?',
-      correct: 'Porque aunque parecía un "chico malo", era muy bueno y dulce con ella',
-      incorrect: 'Porque sacaba las mejores notas en la escuela',
-    },
-    {
-      question: '¿Qué decía la mamá siempre que las chicas se quejaban de trabajar en el restaurante?',
-      correct: 'Que las iba a sacar de la escuela porque su único deber era trabajar para la familia',
-      incorrect: 'Que las iba a mandar a vivir a China',
-    },
-    {
-      question: '¿Qué le dijo la amiga a Marga para que no se preocupara por su mamá?',
-      correct: 'Que no se preocupara, porque si era necesario, su propia madre la podía adoptar',
-      incorrect: 'Que se fuera a vivir sola',
-    },
-    {
-      question: '¿Qué le hizo la chica mala de la escuela (Cynthia) a una de las hermanas?',
-      correct: 'Le pegó muy fuerte en la cara',
-      incorrect: 'Le robó un libro',
-    },
-    {
-      question: 'Cuando la niña pequeña pregunta sobre la menstruación (la regla), ¿qué hace el papá?',
-      correct: 'Se hace el dormido en el sofá porque en esa casa nunca se hablan de esos temas',
-      incorrect: 'Le explica todo muy bien',
-    },
-    {
-      question: '¿Qué quería el hombre borracho que entró al restaurante?',
-      correct: 'Quería obligar a la niña a que le vendiera una pulsera que ella estaba haciendo para jugar',
-      incorrect: 'Quería beber más cerveza gratis',
-    },
-    {
-      question: '¿Qué le dijo la mamá a la niña sobre el hombre borracho?',
-      correct: 'Dásela (la pulsera) rápido para que se vaya de una vez',
-      incorrect: 'Ve a la cocina y escóndete, voy a llamar a la policía',
-    },
-    {
-      question: '¿Qué pasa de forma muy graciosa después de hablar en la habitación sobre gatos muertos?',
-      correct: 'Llaman por teléfono para decir que la niña pequeña ganó un premio de dibujo',
-      incorrect: 'El novio trae un perro',
-    },
-    {
-      question: '¿Cuál es un ejemplo de las cosas feas (racismo) que sufren las hermanas?',
-      correct: 'Las personas en la calle les gritan insultos y cosas feas por ser chinas',
-      incorrect: 'Las hacen limpiar la escuela',
-    },
-    {
-      question: '¿Qué hace la hermana pequeña para ayudar a Marga con su novio secreto?',
-      correct: 'Le guarda el secreto y vigila la puerta cuando Marga sale de la casa',
-      incorrect: 'Le dice a la mamá que Marga está estudiando',
-    },
-    {
-      question: 'Cuando la mamá se enoja y dice que sus hijas son "yua fa ba", ¿qué quiere decir?',
-      correct: 'Que son muy españolas ya y han perdido sus costumbres chinas',
-      incorrect: 'Que cocinan muy mal',
-    },
-    {
-      question: '¿Qué amenaza les hizo la mamá si decidían casarse con un chico español?',
-      correct: 'Que no les dejaría el restaurante ni un solo dinero de la familia en el futuro',
-      incorrect: 'Que no iría a la fiesta de la boda',
-    },
-    {
-      question: '¿Qué hizo el hermano pequeño apenas vio al hámster muerto?',
-      correct: 'Dijo súper rápido: "¡Es culpa tuya, tú lo soltaste!" echándole la culpa a su hermana',
-      incorrect: 'Lloró mucho pidiendo perdón',
-    },
-    {
-      question: '¿Por qué es muy graciosa y extraña la llamada de la abuela desde China?',
-      correct: 'Porque llama de madrugada para preguntar si son niñas buenas justo cuando están todos viendo al animal muerto aplastado',
-      incorrect: 'Porque llama para cantar cumpleaños un día cualquiera',
-    },
-    {
-      question: 'Según Marga, ¿qué cosa buena está intentando hacer Mc Alberto por ella?',
-      correct: 'Intentar dejar de fumar marihuana (porros) aunque le cuesta mucho',
-      incorrect: 'Borrarse sus tatuajes con láser',
-    },
-    {
-      question: '¿Qué es lo que la madre casi siempre les grita a las hijas que hagan?',
-      correct: 'Que ayuden en el restaurante: limpiando, sirviendo y trabajando sin parar',
-      incorrect: 'Que lean muchos libros en chino',
-    },
-    {
-      question: 'Cuando ven a otras chicas chinas en el campamento de verano, ¿qué les parece muy divertido?',
-      correct: 'Que las otras chicas tenían caras chinas pero hablaban como españolas de Madrid',
-      incorrect: 'Que tenían el pelo de muchos colores',
-    },
-    {
-      question: '¿Qué confusión graciosa tienen las chicas con el nombre del chico llamado "31"?',
-      correct: 'Ellas creían que "31" era un número, pero en realidad su nombre chino significa "agua" (manantial)',
-      incorrect: 'Pensaban que quería cobrarles 31 euros',
-    },
-    {
-      question: '¿Qué piensa la chica que es súper injusto cuando la mamá les grita que son perezosas?',
-      correct: 'Que ella saca notas excelentes (muy buenas) en la escuela y cualquier padre en España estaría súper feliz por eso',
-      incorrect: 'Que ella limpia toda la casa todos los días',
-    },
-    {
-      question: '¿Cómo sabemos que la mamá pide demasiado trabajo en el restaurante?',
-      correct: 'Porque les grita que son perezosas y las pone a limpiar las mesas aunque no haya ni un solo cliente en el restaurante',
-      incorrect: 'Porque ella misma cocina todo',
-    },
-    {
-      question: '¿Qué problema de la escuela nos muestra la historia con la chica mala, Cynthia?',
-      correct: 'El acoso escolar (bullying), donde los chicos son malos y se pelean en los pasillos de la escuela',
-      incorrect: 'El problema de sacar malas notas',
-    },
-    {
-      question: 'En toda la historia, ¿qué hace casi siempre el papá de las niñas cuando hay gritos o problemas?',
-      correct: 'Está durmiendo en el sofá, leyendo, o haciendo como que no escucha nada de los problemas de sus hijas',
-      incorrect: 'Se va a trabajar afuera',
     },
   ],
 };
