@@ -80,7 +80,7 @@ function NameEntryScreen({ onJoin }) {
     try {
       await onJoin(name.trim());
     } catch (err) {
-      setError('Error al conectar. Revisa tu conexión e inténtalo de nuevo.');
+      setError(err?.message || 'Error al conectar. Revisa tu conexión e inténtalo de nuevo.');
     } finally {
       setLoading(false);
     }
