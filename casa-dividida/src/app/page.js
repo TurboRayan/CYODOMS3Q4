@@ -267,9 +267,9 @@ function RopeBar({ position }) {
         </div>
       </div>
       <div className="flex justify-between text-[10px] text-gray-500 mt-1 px-1">
-        <span>← Victoria Rev. (25%)</span>
-        <span className="text-yellow-600 font-bold">EMPATE</span>
-        <span>Victoria Exil. (75%) →</span>
+        <span>← Exiliados ganan (0%)</span>
+        <span className="text-yellow-600 font-bold">50%</span>
+        <span>Revolucionarios ganan (100%) →</span>
       </div>
     </div>
   );
@@ -522,6 +522,59 @@ function LeaderboardPanel({ players, myId }) {
 }
 
 // ---------------------------------------------------------------------------
+// WinScreen — full-screen overlay when the game ends
+// ---------------------------------------------------------------------------
+
+function WinScreen({ winningFaction, myFaction }) {
+  const isWinner = myFaction === winningFaction;
+  const winData = winningFaction === 'revolucionarios' ? REVOLUCIONARIOS : EXILIADOS;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-8 text-center"
+      style={{
+        background: isWinner
+          ? winningFaction === 'revolucionarios'
+            ? 'linear-gradient(to bottom, #1a0000, #0a0a0a)'
+            : 'linear-gradient(to bottom, #00001a, #0a0a0a)'
+          : '#0a0a0a',
+      }}
+    >
+      {isWinner ? (
+        <>
+          <div className="text-8xl mb-6 animate-bounce">🏆</div>
+          <h1
+            className="text-6xl font-extrabold mb-3"
+            style={{ color: winningFaction === 'revolucionarios' ? '#f87171' : '#60a5fa' }}
+          >
+            ¡Ganaron!
+          </h1>
+          <p className="text-2xl font-bold text-white mb-2">
+            {winData.emoji} {winData.name}
+          </p>
+          <p className="text-gray-400 text-base mt-2">¡Felicitaciones por su victoria!</p>
+          <div className="mt-6 text-4xl">🎉🎊🎉</div>
+        </>
+      ) : (
+        <>
+          <div className="text-8xl mb-6">😔</div>
+          <h1 className="text-6xl font-extrabold text-gray-500 mb-3">¡Perdieron!</h1>
+          <p className="text-xl text-gray-400 mb-2">
+            {winData.emoji} {winData.name} ha ganado
+          </p>
+          <p className="text-gray-600 text-base mt-2">Mejor suerte la próxima vez</p>
+        </>
+      )}
+      <div className="mt-10 px-6 py-3 rounded-2xl border border-gray-800 bg-gray-900/60">
+        <p className="text-gray-500 text-sm">
+          ⏳ Esperando al/a la profesor/a para reiniciar el juego…
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main GamePage
 // ---------------------------------------------------------------------------
 
@@ -590,6 +643,22 @@ export default function GamePage() {
     const until = faction === 'revolucionarios' ? revBoostUntil : exilBoostUntil;
     return until ? new Date(until) > new Date() : false;
   }, [faction, revBoostUntil, exilBoostUntil]);
+
+  // ── Momentum penalty: as winning side approaches 100%, their pulls shrink ──
+  // Between 75–90% advantage: scales from 1.0 → 0.5. Above 90%: capped at 0.5.
+  const momentumMultiplier = useMemo(() => {
+    if (!faction) return 1;
+    const pos = ropePosition;
+    if (faction === 'revolucionarios') {
+      if (pos <= 75) return 1.0;
+      if (pos >= 90) return 0.5;
+      return 1.0 - 0.5 * ((pos - 75) / 15);
+    } else {
+      if (pos >= 25) return 1.0;
+      if (pos <= 10) return 0.5;
+      return 1.0 - 0.5 * ((25 - pos) / 15);
+    }
+  }, [faction, ropePosition]);
 
   // Team boost countdown
   useEffect(() => {
@@ -780,7 +849,7 @@ export default function GamePage() {
     const newStreak = streak + 1;
     const streakMult = 1 + newStreak * 0.1;
     const teamMult = teamBoostActive ? 1.5 : 1.0;
-    const totalDelta = streakMult * bonusMultiplier * teamMult;
+    const totalDelta = streakMult * bonusMultiplier * teamMult * momentumMultiplier;
 
     await nudgeRope(factionData.ropeDirection * totalDelta);
     setBonusMultiplier(1);
@@ -803,14 +872,14 @@ export default function GamePage() {
     showNotification('🕵️ ¡Apoyo de la CIA! Respuesta automática correcta');
     setTimeout(nextQuestion, 1800);
   }, [
-    streak, teamBoostActive, bonusMultiplier, factionData, nudgeRope, playerId,
-    currentQIndex, questions, nextQuestion, showNotification,
+    streak, teamBoostActive, bonusMultiplier, momentumMultiplier, factionData,
+    nudgeRope, playerId, currentQIndex, questions, nextQuestion, showNotification,
   ]);
 
   // ── Answer handler ────────────────────────────────────────────────────────
   const handleAnswer = useCallback(
     async (answer) => {
-      if (answered || answerLockRef.current) return;
+      if (answered || answerLockRef.current || winningFaction) return;
       answerLockRef.current = true;
       setAnswered(true);
       setSelectedAnswer(answer);
@@ -833,17 +902,18 @@ export default function GamePage() {
           showNotification(`🎯 ¡Racha de ${newStreak}! Power-up: ${randomPowerup.name}`, 3000);
         }
 
-        // Streak-scaled pull: 1.0 + streak × 0.1 (e.g. streak 1 → 1.1, streak 5 → 1.5)
+        // Streak-scaled pull + momentum penalty when leading heavily
         const streakMult = 1 + newStreak * 0.1;
         const teamMult = teamBoostActive ? 1.5 : 1.0;
-        const totalDelta = streakMult * bonusMultiplier * teamMult;
+        const totalDelta = streakMult * bonusMultiplier * teamMult * momentumMultiplier;
 
         await nudgeRope(factionData.ropeDirection * totalDelta);
 
         const notifications = [];
-        if (newStreak > 1) notifications.push(`🔥 Racha ×${newStreak} → ${streakMult.toFixed(1)}× pull`);
-        if (bonusMultiplier > 1) notifications.push(`⚡ ${bonusMultiplier}× bonus`);
-        if (teamMult > 1) notifications.push(`💪 Impulso de equipo ×${teamMult}`);
+        if (newStreak > 1) notifications.push(`🔥 Racha ×${newStreak}`);
+        if (bonusMultiplier > 1) notifications.push(`⚡ ${bonusMultiplier}×`);
+        if (teamMult > 1) notifications.push(`💪 ×1.5`);
+        if (momentumMultiplier < 1) notifications.push(`⚖️ Resistencia ${(momentumMultiplier * 100).toFixed(0)}%`);
         if (notifications.length) showNotification(notifications.join(' · '));
 
         setBonusMultiplier(1);
@@ -883,8 +953,8 @@ export default function GamePage() {
     },
     [
       answered, questions, currentQIndex, streak, powerupAvailable, pendingPowerup,
-      factionData, bonusMultiplier, shieldActive, teamBoostActive, nudgeRope,
-      playerId, nextQuestion, showNotification,
+      factionData, bonusMultiplier, shieldActive, teamBoostActive, momentumMultiplier,
+      winningFaction, nudgeRope, playerId, nextQuestion, showNotification,
     ]
   );
 
@@ -978,10 +1048,10 @@ export default function GamePage() {
     showNotification('🎯 ¡Sabotaje ejecutado! El enemigo pierde 3 puntos');
   }, [playerId, faction, factionData, showNotification]);
 
-  // ── Win detection ─────────────────────────────────────────────────────────
+  // ── Win detection — full 100% pull required ───────────────────────────────
   const winningFaction = useMemo(() => {
-    if (ropePosition <= 25) return 'exiliados';
-    if (ropePosition >= 75) return 'revolucionarios';
+    if (ropePosition <= 0) return 'exiliados';
+    if (ropePosition >= 100) return 'revolucionarios';
     return null;
   }, [ropePosition]);
 
@@ -1058,22 +1128,13 @@ export default function GamePage() {
         <h2 className="text-2xl font-extrabold mt-0.5 tracking-tight">⚔️ Cabo de Guerra</h2>
       </header>
 
+      {/* Win screen — full-screen overlay, shown on top of everything */}
+      {winningFaction && (
+        <WinScreen winningFaction={winningFaction} myFaction={faction} />
+      )}
+
       <RopeBar position={ropePosition} />
       <PlayerRoster players={allPlayers} myFaction={faction} myName={playerName} />
-
-      {winningFaction && (
-        <div
-          className={`mx-4 mb-2 py-2 rounded-xl text-center font-bold text-sm ${
-            winningFaction === 'revolucionarios'
-              ? 'bg-red-800/60 text-red-200 border border-red-500'
-              : 'bg-blue-800/60 text-blue-200 border border-blue-500'
-          }`}
-        >
-          {winningFaction === 'revolucionarios'
-            ? '🏆 ¡Los Revolucionarios dominan el campo!'
-            : '🏆 ¡Los Exiliados dominan el campo!'}
-        </div>
-      )}
 
       {/* Faction badge + stats */}
       <div className="flex items-center justify-between px-4 py-1">
@@ -1126,7 +1187,7 @@ export default function GamePage() {
       </div>
 
       {/* Active status indicators */}
-      {(shieldActive || bonusMultiplier > 1 || teamBoostActive) && (
+      {(shieldActive || bonusMultiplier > 1 || teamBoostActive || momentumMultiplier < 1) && (
         <div className="flex flex-wrap gap-2 px-4 mb-2">
           {shieldActive && (
             <div className="text-xs px-2 py-1 rounded-full bg-cyan-900/60 border border-cyan-500 text-cyan-300 font-semibold">
@@ -1141,6 +1202,11 @@ export default function GamePage() {
           {teamBoostActive && (
             <div className="text-xs px-2 py-1 rounded-full bg-green-900/60 border border-green-500 text-green-300 font-semibold">
               💪 Impulso equipo 1.5× ({teamBoostSecondsLeft}s)
+            </div>
+          )}
+          {momentumMultiplier < 1 && (
+            <div className="text-xs px-2 py-1 rounded-full bg-orange-900/60 border border-orange-500 text-orange-300 font-semibold">
+              ⚖️ Resistencia {(momentumMultiplier * 100).toFixed(0)}% — ¡el otro equipo se defiende!
             </div>
           )}
         </div>
