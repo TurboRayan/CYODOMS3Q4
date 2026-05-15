@@ -56,16 +56,34 @@ const TEAM_BOOST_SECONDS = 45;
 // NameEntryScreen
 // ---------------------------------------------------------------------------
 
+// Works on HTTP (local network) and HTTPS — crypto.randomUUID needs HTTPS
+function safeUUID() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 function NameEntryScreen({ onJoin }) {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim() || loading) return;
+    setError('');
     setLoading(true);
-    await onJoin(name.trim());
-    setLoading(false);
+    try {
+      await onJoin(name.trim());
+    } catch (err) {
+      setError('Error al conectar. Revisa tu conexión e inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,6 +105,9 @@ function NameEntryScreen({ onJoin }) {
               autoFocus
               className="bg-gray-800 border border-gray-600 text-white rounded-xl px-4 py-3 text-center text-lg focus:outline-none focus:border-yellow-500 transition-colors"
             />
+            {error && (
+              <p className="text-red-400 text-xs text-center">{error}</p>
+            )}
             <button
               type="submit"
               disabled={!name.trim() || loading}
@@ -720,13 +741,12 @@ export default function GamePage() {
 
       const { data: player, error } = await supabase
         .from('players')
-        .insert({ name, faction: chosenFaction, session_id: crypto.randomUUID() })
+        .insert({ name, faction: chosenFaction, session_id: safeUUID() })
         .select()
         .single();
 
       if (error || !player) {
-        showNotification('⚠️ Error al unirse. Intenta de nuevo.');
-        return;
+        throw new Error(error?.message || 'No se pudo unir al juego.');
       }
 
       const fd = chosenFaction === 'revolucionarios' ? REVOLUCIONARIOS : EXILIADOS;
