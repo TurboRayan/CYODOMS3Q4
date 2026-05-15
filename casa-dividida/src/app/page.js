@@ -245,8 +245,8 @@ function RopeBar({ position }) {
       </div>
       <div className="relative w-full h-14 flex rounded-2xl overflow-hidden border-2 border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.3)]">
         <div
-          className="flex items-center justify-end pr-3 transition-all duration-700 ease-out bg-gradient-to-r from-red-800 to-red-600"
-          style={{ width: `${position}%` }}
+          className="flex items-center justify-end pr-3 transition-all duration-700 ease-out"
+          style={{ width: `${position}%`, background: 'linear-gradient(to right, #991b1b, #dc2626)' }}
         >
           {position > 15 && (
             <span className="text-white font-bold text-sm tabular-nums drop-shadow">{revPct}%</span>
@@ -258,8 +258,8 @@ function RopeBar({ position }) {
           </div>
         </div>
         <div
-          className="flex items-center justify-start pl-3 transition-all duration-700 ease-out bg-gradient-to-l from-blue-800 to-blue-600"
-          style={{ width: `${100 - position}%` }}
+          className="flex items-center justify-start pl-3 transition-all duration-700 ease-out"
+          style={{ width: `${100 - position}%`, background: 'linear-gradient(to left, #1e40af, #2563eb)' }}
         >
           {100 - position > 15 && (
             <span className="text-white font-bold text-sm tabular-nums drop-shadow">{exilPct}%</span>
