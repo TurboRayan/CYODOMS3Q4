@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git clone:*)",
+      "mcp__bridgemind__list_projects"
+    ]
+  }
+}
